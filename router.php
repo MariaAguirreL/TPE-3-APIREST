@@ -6,11 +6,11 @@
    $router = new Router();
    
    // Definir las rutas para ofertas
-   $router->addRoute('ofertas', 'GET', 'ChocolatesApiController', 'getOfertasChocolates');  // Listar ofertas
-   $router->addRoute('ofertas/:ID', 'GET', 'ChocolatesApiController', 'getOfertaChocolate');  // Obtener oferta por ID
-   $router->addRoute('ofertas', 'POST', 'ChocolatesApiController', 'nuevaOfertaChocolate');  // Crear una nueva oferta
-   $router->addRoute('ofertas/:ID', 'PUT', 'ChocolatesApiController', 'editarOfertaChocolate');  // Editar una oferta existente
-   $router->addRoute('ofertas/categoria/{id}', 'GET', 'ChocolatesApiController', 'getOfertasChocolatesPorCategoria');
+   $router->addRoute('ofertas', 'GET', 'CombosApiController', 'getOfertaCombos');  // Listar ofertas
+   $router->addRoute('ofertas/:ID', 'GET', 'CombosApiController', 'getOfertaCombo');  // Obtener oferta por ID
+   $router->addRoute('ofertas', 'POST', 'CombosApiController', 'nuevaOfertaCombo');  // Crear una nueva oferta
+   $router->addRoute('ofertas/:ID', 'PUT', 'CombosApiController', 'editarOfertaCombo');  // Editar una oferta existente
+   $router->addRoute('ofertas/chocolate/{id}', 'GET', 'CombosApiController', 'getOfertasCombosPorChocolate');
 
    // Rutar la solicitud a la acción correspondiente en el controlador
    $router->route($_GET["resource"], $_SERVER['REQUEST_METHOD']);

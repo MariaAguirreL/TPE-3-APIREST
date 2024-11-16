@@ -15,8 +15,8 @@ class ChocoModel {
  }
 
     //Función que pide a la DB todos los chocolates
-    public function getChocolates(){
-        $sql = "select * from chocolate"; 
+    public function getOfertasCombos(){
+        $sql = "select * from ofertas"; 
         $query = $this->bd->prepare($sql);
         $query->execute();
     
@@ -24,30 +24,11 @@ class ChocoModel {
     
         return $chocolates;
     }
-    public function getCombosPorChocolate($chocolate){
-        $sql = "select * from combos where FK_CHOCOLATE = $chocolate"; //hacer con join;
-         
-        $sql = ("select c.*, ch.SABOR as SABOR from combos c INNER JOIN chocolate ch on c.FK_CHOCOLATE = ch.ID where c.FK_CHOCOLATE = $chocolate");
 
-       
-        //SELECT * FROM chocolate JOIN combos ON chocolate.ID=combos.FK_CHOCOLATE WHERE chocolate.ID = ?;
-        $query = $this->bd->prepare($sql);
-        $query->execute(); //la variable chocolate debe pasarse como parametro al execute
-    
-        $combos = $query->fetchAll(PDO::FETCH_OBJ);
-    
-        return $combos;
-    }
-     public function guardarChocolate($sabor, $relleno, $empaque){
-        $sql = "INSERT INTO chocolate (SABOR, RELLENO, EMPAQUE) VALUES (?, ?, ?)"; 
-        $query = $this->bd->prepare($sql);
-        $query->execute([$sabor, $relleno, $empaque]);
-     }
 
-     //Función para traer un chocolate por id
 
-public function GetByIdChocolate($id) { 
-   $sql = "SELECT * FROM chocolate WHERE chocolate.ID=?"; // Quizás quieras traer todos los datos del chocolate
+    public function getOfertaCombo($id) { 
+   $sql = "SELECT * FROM ofertas WHERE oferta_ID=?"; // Quizás quieras traer todos los datos del chocolate
 
    $query = $this->bd->prepare($sql);
     
@@ -55,21 +36,51 @@ public function GetByIdChocolate($id) {
    $query->execute([$id]);
 
     //Obtenemos el resultado
-    $chocolate = $query->fetch(PDO::FETCH_ASSOC);
+    $chocolateOferta = $query->fetch(PDO::FETCH_ASSOC);
 
-    return $chocolate;
+    return $chocolateOferta;
 }
-
-
-public function guardarChocolateEditado($id,$sabor, $relleno, $empaque){
-    $sentence=$this->bd->prepare("UPDATE chocolate SET SABOR= ?, RELLENO= ?,EMPAQUE= ? WHERE CHOCOLATE.ID= ?");
-    $sentence->execute([$id,$sabor, $relleno, $empaque]);
+   
+public function nuevaOfertaCombo($nombre, $descuento, $id_choco){
+        $sql = "INSERT INTO oferta (NOMBRE, DESCUENTO, ID_COMBO) VALUES (?, ?, ?)"; 
+        $query = $this->bd->prepare($sql);
+        $query->execute([$nombre, $descuento, $id_choco]);
     }
 
 
-public function eliminarChocolate($id) {
-   $sentence=$this->bd->prepare("DELETE FROM chocolate WHERE chocolate.ID= ?");
-    $sentence->execute([$id]);
-}
+
+public function editarOfertaCombo($id,$nombre, $descuento, $id_choco){
+    $sentence=$this->bd->prepare("UPDATE oferta SET nombre= ?, descuento= ?, id_COMBO= ? WHERE ID_oferta= ?");
+    $sentence->execute([$nombre, $descuento, $id_choco, $id]);
+    }
+
+
+
+
+
+public function getOfertasCombosPorChocolate($Id_chocolate){
+        
+    
+        $sql = ("select c.*, ch.SABOR as SABOR from combos c INNER JOIN chocolate ch on c.FK_CHOCOLATE = ch.ID where c.FK_CHOCOLATE = $chocolate");
+
+       
+        //SELECT * FROM chocolate JOIN combos ON chocolate.ID=combos.FK_CHOCOLATE WHERE chocolate.ID = ?;
+        $query = $this->bd->prepare($sql);
+        $query->execute([$Id_chocolate]); //la variable chocolate debe pasarse como parametro al execute
+    
+        return $query->fetch(PDO::FETCH_OBJ);
+ 
+    }
+     
+
+
+
+
+
+
+//public function eliminarChocolate($id) {
+   //$sentence=$this->bd->prepare("DELETE FROM chocolate WHERE chocolate.ID= ?");
+    //$sentence->execute([$id]);
+//}
 }
     
