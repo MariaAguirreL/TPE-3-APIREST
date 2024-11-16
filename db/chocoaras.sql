@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 15-10-2024 a las 12:10:16
+-- Tiempo de generación: 16-11-2024 a las 20:58:59
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -41,7 +41,9 @@ CREATE TABLE `chocolate` (
 INSERT INTO `chocolate` (`ID`, `SABOR`, `RELLENO`, `EMPAQUE`) VALUES
 (1, 'Blanco', 'ddl', 'plastico'),
 (2, 'negro', 'crema', 'tela'),
-(3, 'con leche', 'frutilla', 'papel');
+(3, 'con leche', 'frutilla', 'papel'),
+(4, 'choconuevo', 'crem', 'liso'),
+(5, 'choco', 'ave', 'rugoso');
 
 -- --------------------------------------------------------
 
@@ -52,7 +54,7 @@ INSERT INTO `chocolate` (`ID`, `SABOR`, `RELLENO`, `EMPAQUE`) VALUES
 CREATE TABLE `combos` (
   `ID` int(11) NOT NULL,
   `NOMBRE` varchar(100) NOT NULL,
-  `descripcion` varchar(150) NOT NULL,
+  `CANTIDAD` int(11) NOT NULL,
   `FK_CHOCOLATE` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
 
@@ -60,10 +62,23 @@ CREATE TABLE `combos` (
 -- Volcado de datos para la tabla `combos`
 --
 
-INSERT INTO `combos` (`ID`, `NOMBRE`, `descripcion`, `FK_CHOCOLATE`) VALUES
-(1, 'Combo 1', 'bombones:chocolate blanco rellenado con ddl y empaque plastico', 1),
-(2, 'Combo 2', 'alfajores:chocolate negro relleno de crema y empaque de tela', 2),
-(3, 'Combo 3', 'chupetines:chocolate blanco relleno de ddl y empaque plastico', 1);
+INSERT INTO `combos` (`ID`, `NOMBRE`, `CANTIDAD`, `FK_CHOCOLATE`) VALUES
+(1, 'Combo 1', 12, 1),
+(2, 'Combo 2', 12, 2),
+(3, 'Combo 3', 11, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `ofertas`
+--
+
+CREATE TABLE `ofertas` (
+  `id` int(11) NOT NULL,
+  `nombre` varchar(100) NOT NULL,
+  `descuento` decimal(5,2) NOT NULL,
+  `id_combo` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
 
 -- --------------------------------------------------------
 
@@ -74,8 +89,15 @@ INSERT INTO `combos` (`ID`, `NOMBRE`, `descripcion`, `FK_CHOCOLATE`) VALUES
 CREATE TABLE `usuarios` (
   `id_usuario` int(11) NOT NULL,
   `nombre` varchar(100) DEFAULT NULL,
-  `contraseña` varchar(40) DEFAULT NULL
+  `contraseña` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
+
+--
+-- Volcado de datos para la tabla `usuarios`
+--
+
+INSERT INTO `usuarios` (`id_usuario`, `nombre`, `contraseña`) VALUES
+(1, 'webadmin', '21232f297a57a5a743894a0e4a801fc3');
 
 --
 -- Índices para tablas volcadas
@@ -95,6 +117,13 @@ ALTER TABLE `combos`
   ADD KEY `FK_CHOCOLATE` (`FK_CHOCOLATE`) USING BTREE;
 
 --
+-- Indices de la tabla `ofertas`
+--
+ALTER TABLE `ofertas`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `id_combo` (`id_combo`);
+
+--
 -- Indices de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
@@ -108,7 +137,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `chocolate`
 --
 ALTER TABLE `chocolate`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `combos`
@@ -117,10 +146,16 @@ ALTER TABLE `combos`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
+-- AUTO_INCREMENT de la tabla `ofertas`
+--
+ALTER TABLE `ofertas`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Restricciones para tablas volcadas
@@ -131,6 +166,12 @@ ALTER TABLE `usuarios`
 --
 ALTER TABLE `combos`
   ADD CONSTRAINT `combos_ibfk_1` FOREIGN KEY (`FK_CHOCOLATE`) REFERENCES `chocolate` (`ID`);
+
+--
+-- Filtros para la tabla `ofertas`
+--
+ALTER TABLE `ofertas`
+  ADD CONSTRAINT `ofertas_ibfk_1` FOREIGN KEY (`id_combo`) REFERENCES `combos` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

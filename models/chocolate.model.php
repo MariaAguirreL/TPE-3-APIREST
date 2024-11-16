@@ -61,7 +61,11 @@ public function editarOfertaCombo($id,$nombre, $descuento, $id_choco){
 public function getOfertasCombosPorChocolate($Id_chocolate){
         
     
-        $sql = ("select c.*, ch.SABOR as SABOR from combos c INNER JOIN chocolate ch on c.FK_CHOCOLATE = ch.ID where c.FK_CHOCOLATE = $chocolate");
+        $sql = "SELECT o.*, c.nombre AS combo_nombre, ch.nombre AS chocolate_nombre 
+                FROM ofertas o 
+                INNER JOIN combos c ON o.id_producto = c.ID_combo 
+                INNER JOIN chocolate ch ON c.ID_chocolate = ch.ID_chocolate 
+                WHERE ch.ID_chocolate= ?";
 
        
         //SELECT * FROM chocolate JOIN combos ON chocolate.ID=combos.FK_CHOCOLATE WHERE chocolate.ID = ?;
