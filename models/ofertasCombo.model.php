@@ -52,7 +52,7 @@ class ChocoModel {
 
 
     public function getOfertaCombo($id) { 
-   $sql = "SELECT * FROM ofertas WHERE oferta_ID=?"; // Quizás quieras traer todos los datos del chocolate
+   $sql = "SELECT * FROM ofertas WHERE id=?"; // Quizás quieras traer todos los datos del chocolate
 
    $query = $this->bd->prepare($sql);
     
@@ -65,17 +65,20 @@ class ChocoModel {
     return $chocolateOferta;
 }
    
-public function nuevaOfertaCombo($nombre, $descuento, $id_choco){
-        $sql = "INSERT INTO oferta (NOMBRE, DESCUENTO, ID_COMBO) VALUES (?, ?, ?)"; 
+public function nuevaOfertaCombo($nombre, $descuento, $id_combo){
+        $sql = "INSERT INTO ofertas (nombre, descuento, id_combo) VALUES (?, ?, ?)"; 
         $query = $this->bd->prepare($sql);
-        $query->execute([$nombre, $descuento, $id_choco]);
+        $ofertas=$query->execute([$nombre, $descuento, $id_combo]);
+        return $ofertas;
+        
     }
 
 
 
 public function editarOfertaCombo($id,$nombre, $descuento, $id_choco){
-    $sentence=$this->bd->prepare("UPDATE oferta SET nombre= ?, descuento= ?, id_COMBO= ? WHERE ID_oferta= ?");
+    $sentence=$this->bd->prepare("UPDATE ofertas SET nombre= ?, descuento= ?, id_combo= ? WHERE id= ?");
     $sentence->execute([$nombre, $descuento, $id_choco, $id]);
+    return $id;
     }
 
 
@@ -83,32 +86,21 @@ public function editarOfertaCombo($id,$nombre, $descuento, $id_choco){
 
 
 public function getOfertasCombosPorChocolate($Id_chocolate){
+
+    $sql = "SELECT o.*, c.nombre AS combo_nombre, ch.sabor AS chocolate_nombre 
+    FROM ofertas o 
+    INNER JOIN combos c ON o.id_combo = c.id 
+    INNER JOIN chocolate ch ON c.id= ch.id 
+    WHERE ch.id = ?";  
+
+
+$query = $this->bd->prepare($sql);
+$query->execute([$Id_chocolate]);
+
+$c=$query->fetchAll(PDO::FETCH_ASSOC);
+return $c;
         
-    
-        $sql = "SELECT o.*, c.nombre AS combo_nombre, ch.nombre AS chocolate_nombre 
-                FROM ofertas o 
-                INNER JOIN combos c ON o.id_producto = c.ID_combo 
-                INNER JOIN chocolate ch ON c.ID_chocolate = ch.ID_chocolate 
-                WHERE ch.ID_chocolate= ?";
-
-       
-        //SELECT * FROM chocolate JOIN combos ON chocolate.ID=combos.FK_CHOCOLATE WHERE chocolate.ID = ?;
-        $query = $this->bd->prepare($sql);
-        $query->execute([$Id_chocolate]); //la variable chocolate debe pasarse como parametro al execute
-    
-        return $query->fetch(PDO::FETCH_OBJ);
  
-    }
-     
-
-
-
-
-
-
-//public function eliminarChocolate($id) {
-   //$sentence=$this->bd->prepare("DELETE FROM chocolate WHERE chocolate.ID= ?");
-    //$sentence->execute([$id]);
-//}
+}
 }
     
