@@ -14,8 +14,32 @@ class ChocoModel {
         }
  }
 
+ public function getOfertasCombos($filtros = [], $ordenarPor = null, $orden = 'ASC') {
+    $sql = "SELECT * FROM ofertas";
+    $valores = [];//array donde se van a guardar para reemplazar los valores en cada ? de la consulta SQL
+
+    // Aplicar filtros opcionales
+    if (!empty($filtros['id_combo'])) {//Si se pasa un valor para id_combo, se añade una cláusula AND id_producto = ? a la consulta SQL, y el valor de id_producto se guarda en el array $valores.
+        $sql .= " AND id_combo = ?";
+        $valores[] = $filtros['id_combo'];
+    }
+    if (!empty($filtros['descuento_min'])) {//combos con descuentos minimos de x
+        $sql .= " AND descuento >= ?";
+        $valores[] = $filtros['descuento_min'];
+    }
+   
+    // Si el $ordenarPor esta pasado por parametro
+    if ($ordenarPor) {
+        $sql .= " ORDER BY $ordenarPor $orden";
+    }
+
+    $query = $this->bd->prepare($sql);
+    $query->execute($valores);
+    return $query->fetchAll(PDO::FETCH_ASSOC);
+}
+
     //Función que pide a la DB todos los chocolates
-    public function getOfertasCombos(){
+    /*public function getOfertasCombos(){
         $sql = "select * from ofertas"; 
         $query = $this->bd->prepare($sql);
         $query->execute();
@@ -23,7 +47,7 @@ class ChocoModel {
         $chocolates = $query->fetchAll(PDO::FETCH_OBJ);
     
         return $chocolates;
-    }
+    }*/
 
 
 

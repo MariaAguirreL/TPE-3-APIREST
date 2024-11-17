@@ -1,7 +1,7 @@
 <?php
   
    require_once 'libs/Router/Router.php';
-   require_once 'api/controllers/chocolates-api.controller.php';   // Controlador de ofertas de chocolates
+   require_once 'api/controllers/CombosApiController.php';   // Controlador de ofertas de chocolates
    
    $router = new Router();
    
